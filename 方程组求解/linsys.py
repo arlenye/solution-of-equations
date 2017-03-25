@@ -6,7 +6,7 @@ from plane import Plane
 
 getcontext().prec = 30
 
-#²ÎÊý»¯½â¼¯
+#å‚æ•°åŒ–è§£é›†
 class Parametrization(object):
     BASEPT_AND_DIR_VECTORS_MUST_BE_IN_SAME_DIM_MSG = (
         'The basepoint and direction vectors should all live in the same dimension')
@@ -41,11 +41,11 @@ class LinearSystem(object):
         except AssertionError:
             raise Exception(self.ALL_PLANES_MUST_BE_IN_SAME_DIM_MSG)
 
-    #½»»»Á½ÐÐ
+    #äº¤æ¢ä¸¤è¡Œ
     def swap_rows(self, row1, row2):
         self.planes[row1],self.planes[row2] = self.planes[row2],self.planes[row1]
 
-    #½«µÈÊ½³ËÒÔ·ÇÁãÊý×Ö
+    #å°†ç­‰å¼ä¹˜ä»¥éžé›¶æ•°å­—
     def multiply_coefficient_and_row(self, coefficient, row):
         n = self[row].normal_vector
         k = self[row].constant_term
@@ -55,7 +55,7 @@ class LinearSystem(object):
 
         self[row] = Plane(normal_vector = new_normal_vector,constant_term = new_constant_term)
 
-    #½«¶à±¶µÄµÈÊ½¼Óµ½ÁíÒ»¸öµÈÊ½ÉÏ
+    #å°†å¤šå€çš„ç­‰å¼åŠ åˆ°å¦ä¸€ä¸ªç­‰å¼ä¸Š
     def add_multiple_times_row_to_row(self, coefficient, row_to_add, row_to_be_added_to):
         n1 = self[row_to_add].normal_vector
         n2 = self[row_to_be_added_to].normal_vector
@@ -67,7 +67,7 @@ class LinearSystem(object):
 
         self[row_to_be_added_to] = Plane(normal_vector=new_normal_vector,constant_term=new_constant_term)
 
-    #¸ºÔðÕÒ³öÃ¿¸öµÈÊ½µÄµÚÒ»¸ö·ÇÁãÏî
+    #è´Ÿè´£æ‰¾å‡ºæ¯ä¸ªç­‰å¼çš„ç¬¬ä¸€ä¸ªéžé›¶é¡¹
     def indices_of_first_nonzero_terms_in_each_row(self):
         num_equations = len(self)
         num_variables = self.dimension
@@ -85,7 +85,7 @@ class LinearSystem(object):
 
         return indices
 
-    #·µ»ØµÄÊÇ·½³Ì×éÀïµÄÆ½ÃæÊýÁ¿
+    #è¿”å›žçš„æ˜¯æ–¹ç¨‹ç»„é‡Œçš„å¹³é¢æ•°é‡
     def __len__(self):
         return len(self.planes)
 
@@ -102,14 +102,14 @@ class LinearSystem(object):
         except AssertionError:
             raise Exception(self.ALL_PLANES_MUST_BE_IN_SAME_DIM_MSG)
 
-    #Êä³öÕû½à°æ±¾µÄ·½³Ì×é
+    #è¾“å‡ºæ•´æ´ç‰ˆæœ¬çš„æ–¹ç¨‹ç»„
     def __str__(self):
         ret = 'Linear System:\n'
         temp = ['Equation {}: {}'.format(i+1,p) for i,p in enumerate(self.planes)]
         ret += '\n'.join(temp)
         return ret
 
-    #Èý½Ç»¯·½³Ì×é
+    #ä¸‰è§’åŒ–æ–¹ç¨‹ç»„
     def compute_triangular_form(self):
         system = deepcopy(self)
 
@@ -131,7 +131,7 @@ class LinearSystem(object):
 
         return system
 
-    #ÈôµÚrowÐÐÏÂÃæÓÐÄ³Ò»ÐÐµÄj±äÁ¿²»ÎªÁã£¬Ôò½»»»ÕâÁ½ÐÐ
+    #è‹¥ç¬¬rowè¡Œä¸‹é¢æœ‰æŸä¸€è¡Œçš„jå˜é‡ä¸ä¸ºé›¶ï¼Œåˆ™äº¤æ¢è¿™ä¸¤è¡Œ
     def swap_with_row_below_for_nonzero_coefficient_if_able(self,row,col):
         num_equations = len(self)
 
@@ -154,7 +154,7 @@ class LinearSystem(object):
             alpha = -gamma/beta
             self.add_multiple_times_row_to_row(alpha,row,k)
 
-    #½«·½³Ì×é±äÎª×î¼ò»¯µÄÌÝÕóÐÎÊ½
+    #å°†æ–¹ç¨‹ç»„å˜ä¸ºæœ€ç®€åŒ–çš„æ¢¯é˜µå½¢å¼
     def compute_rref(self):
         tf = self.compute_triangular_form()
 
@@ -170,20 +170,20 @@ class LinearSystem(object):
 
         return tf
 
-    #»¯ÏµÊýÎª1
+    #åŒ–ç³»æ•°ä¸º1
     def scale_row_to_make_coefficient_equal_one(self,row,col):
         n = self[row].normal_vector
         beta = Decimal('1.0')/n.coordinates[col]
         self.multiply_coefficient_and_row(beta,row)
 
-    #´ÓÏÂÍùÉÏÏû³ýÏµÊý
+    #ä»Žä¸‹å¾€ä¸Šæ¶ˆé™¤ç³»æ•°
     def clear_coefficients_above(self,row,col):
         for k in range(row)[::1]:
             n=self[k].normal_vector
             alpha = -(n.coordinates[col])
             self.add_multiple_times_row_to_row(alpha,row,k)
 
-    #Çó·½³Ì×éµÄ½â
+    #æ±‚æ–¹ç¨‹ç»„çš„è§£
     def compute_solution(self):
         try:
             return self.do_gaussian_elimination_and_parametrize_solution()
@@ -194,7 +194,7 @@ class LinearSystem(object):
             else:
                 raise e
             
-    #ÕÒ³öÎ¨Ò»½â
+    #æ‰¾å‡ºå”¯ä¸€è§£
     def do_gaussian_elimination_and_parametrize_solution(self):
         rref = self.compute_rref()
 
@@ -205,7 +205,7 @@ class LinearSystem(object):
 
         return Parametrization(basepoint,direction_vectors)
 
-    #ÇóµÃ²ÎÊý»¯ÐÎÊ½µÄ·½ÏòÏòÁ¿
+    #æ±‚å¾—å‚æ•°åŒ–å½¢å¼çš„æ–¹å‘å‘é‡
     def extract_direction_vectors_for_parametrization(self):
         num_variables = self.dimension
         pivot_indices = self.indices_of_first_nonzero_terms_in_each_row()
@@ -235,7 +235,7 @@ class LinearSystem(object):
         
         return direction_vectors
 
-    #ÇóµÃ»ù×¼µã
+    #æ±‚å¾—åŸºå‡†ç‚¹
     def extract_basepoint_for_parametrization(self):
         num_variables = self.dimension
         pivot_indices = self.indices_of_first_nonzero_terms_in_each_row()
@@ -250,8 +250,8 @@ class LinearSystem(object):
 
         return Vector(basepoint_coords)
 
-    #¼ì²éÊÇ·ñ´æÔÚÓÐÃ¬¶ÜµÄµÈÊ½¡£¼ì²éÃ¿¸öÆ½Ãæ£¬¿´Æä·¨ÏòÁ¿µÄ×ø±êÊÇ·ñÈ«Îª0£¬Èç¹ûÈ«Îª0£¬ÔòÑ°ÕÒ³£Á¿ÏîµÄ·ÇÁãÏî
-    #Èç¹ûÄÜ¹»ÕÒµ½£¬ÔòËµÃ÷´æÔÚÃ¬¶ÜµÄµÈÊ½(¼´0=k)
+    #æ£€æŸ¥æ˜¯å¦å­˜åœ¨æœ‰çŸ›ç›¾çš„ç­‰å¼ã€‚æ£€æŸ¥æ¯ä¸ªå¹³é¢ï¼Œçœ‹å…¶æ³•å‘é‡çš„åæ ‡æ˜¯å¦å…¨ä¸º0ï¼Œå¦‚æžœå…¨ä¸º0ï¼Œåˆ™å¯»æ‰¾å¸¸é‡é¡¹çš„éžé›¶é¡¹
+    #å¦‚æžœèƒ½å¤Ÿæ‰¾åˆ°ï¼Œåˆ™è¯´æ˜Žå­˜åœ¨çŸ›ç›¾çš„ç­‰å¼(å³0=k)
     def raise_exception_if_contradictory_equation(self):
         for p in self.planes:
             try:
@@ -263,23 +263,9 @@ class LinearSystem(object):
                     if not constant_term.is_near_zero():
                         raise Exception(self.NO_SOLUTIONS_MSG)
                 else:
-                    raise e
+                    raise e 
 
-    #¼ì²éÊÇ·ñ¾ßÓÐÌ«¶àÖ÷±äÁ¿
-    def raise_exception_if_too_few_pivots(self):
-        pivot_indices = self.indices_of_first_nonzero_terms_in_each_row()
-        num_pivots = sum([1 if index>=0 else 0 for index in pivot_indices])
-        num_variables = self.dimension
-
-        if num_pivots<num_variables:
-            raise Exception(self.INF_SOLUTIONS_MSG)
-
-        
-            
-
-        
-
-#¿ìËÙ¼ì²éÐ¡Êý¶ÔÏóÊÇ·ñÎ»ÓÚÁã¹«²î·¶Î§ÄÚ
+#å¿«é€Ÿæ£€æŸ¥å°æ•°å¯¹è±¡æ˜¯å¦ä½äºŽé›¶å…¬å·®èŒƒå›´å†…
 class MyDecimal(Decimal):
     def is_near_zero(self, eps=1e-10):
         return abs(self) < eps
